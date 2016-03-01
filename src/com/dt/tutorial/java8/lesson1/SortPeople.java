@@ -2,14 +2,14 @@ package com.dt.tutorial.java8.lesson1;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
- * Step1: 
- * - what does this code do? 
- * - how does it sort? -> check Person class
- * - remove implemented interface definition
- * - move implemented method out and change .sort parameters
+ * Step2: 
+ * - why do we like anonymous classes?
+ * - make it lambda
+ * - add printSorted method
  * 
  * @author dt
  *
@@ -26,12 +26,61 @@ public class SortPeople {
                                         new Person("Clifford",       33));
     
     // I know this is ugly, but it's Friday ;)
-    // TODO: what if the requirements will change?
-    Collections.sort(people);
+    Collections.sort(people, createComparatorByName());
     
     // printing
     for (Person p : people) {
       System.out.println(p);
     }
+  }
+
+  private static Comparator<Person> createComparatorByName() {
+
+    return new Comparator<Person>() {
+
+      @Override
+      public int compare(Person p1, Person p2) {
+
+        return compareToName(p1, p2);
+      }
+    };
+  }
+
+  private static Comparator<Person> createComparatorByAge() {
+
+    return new Comparator<Person>() {
+
+      @Override
+      public int compare(Person p1, Person p2) {
+
+        return p1.getAge() - p2.getAge();
+      }
+    };
+  }
+
+  private static Comparator<Person> createComparatorByAgeThenName() {
+
+    return new Comparator<Person>() {
+
+      @Override
+      public int compare(Person p1, Person p2) {
+
+        int result = compareToAge(p1, p2);
+        if (result == 0) {
+          result = compareToName(p1, p2);
+        }
+        return result;
+      }
+    };
+  }
+
+  private static int compareToName(Person p1, Person p2) {
+
+    return p1.getName().compareTo(p2.getName());
+  }
+
+  private static int compareToAge(Person p1, Person p2) {
+
+    return p1.getAge() - p2.getAge();
   }
 }
