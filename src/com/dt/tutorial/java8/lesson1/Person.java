@@ -19,8 +19,8 @@ class Person {
 		return name;
 	}
 
-	@Override
-	public String toString() {
-		return "Person [ name = " + String.format("%1$-14s", name) + ", age = " + age + " ]";
-	}
+  @Override
+  public String toString() {
+    return "Person [name=" + name + ", age=" + age + "]";
+  }
 }

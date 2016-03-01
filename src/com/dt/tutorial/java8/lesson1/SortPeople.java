@@ -1,15 +1,13 @@
 package com.dt.tutorial.java8.lesson1;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 /**
- * Step4: 
- * - why Collections.sort is so ugly?
- * - let's transform that into a stream
- * - move out other business logic from Person class
+ * Final version for the presentation.
+ * Question 1: what is my favorite design pattern?
+ * Question 2: where are these people living? 
  * 
  * @author dt
  *
@@ -25,26 +23,21 @@ public class SortPeople {
                                         new Person("Raymond",        40),
                                         new Person("Clifford",       33));
     
-    printSortedList(people, createComparatorByName());
+    printSortedList(people, Comparator.comparing(Person::getName));
   }
 
   private static void printSortedList(List<Person> people, Comparator<Person> comparator) {
 
-    // I know this is ugly, but it's Friday ;)
-    Collections.sort(people, comparator);
-    
-    // printing
-    for (Person p : people) {
-      System.out.println(p);
-    }
+    people.stream()
+          .sorted(comparator)
+          .map(SortPeople::getPrintablePerson)
+          .forEach(System.out::println);
   }
 
-  private static Comparator<Person> createComparatorByName() {
-
-    // method reference can be used instead of lambda expression...
-    return SortPeople::compareToName;
+  private static String getPrintablePerson(Person person) {
+    return "Person [ name = " + String.format("%1$-14s", person.getName()) + ", age = " + person.getAge() + " ]";
   }
-
+  
   private static Comparator<Person> createComparatorByAge() {
 
     // ... or a dynamic comparator can be created in this way:
@@ -56,10 +49,5 @@ public class SortPeople {
     // a very dynamic one
     return Comparator.comparing(Person::getAge)
                      .thenComparing(Person::getName);
-  }
-
-  private static int compareToName(Person p1, Person p2) {
-
-    return p1.getName().compareTo(p2.getName());
   }
 }
