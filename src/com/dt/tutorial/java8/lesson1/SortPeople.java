@@ -6,10 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Step2: 
- * - why do we like anonymous classes?
- * - make it lambda
- * - add printSorted method
+ * Step3: 
+ * - how can we create comparators in nicer way?
  * 
  * @author dt
  *
@@ -25,8 +23,13 @@ public class SortPeople {
                                         new Person("Raymond",        40),
                                         new Person("Clifford",       33));
     
+    printSortedList(people, createComparatorByName());
+  }
+
+  private static void printSortedList(List<Person> people, Comparator<Person> comparator) {
+
     // I know this is ugly, but it's Friday ;)
-    Collections.sort(people, createComparatorByName());
+    Collections.sort(people, comparator);
     
     // printing
     for (Person p : people) {
@@ -36,41 +39,25 @@ public class SortPeople {
 
   private static Comparator<Person> createComparatorByName() {
 
-    return new Comparator<Person>() {
-
-      @Override
-      public int compare(Person p1, Person p2) {
-
-        return compareToName(p1, p2);
-      }
-    };
+    // lambda expressions are working fine with functions...
+    return (p1, p2) -> compareToName(p1, p2);
   }
 
   private static Comparator<Person> createComparatorByAge() {
 
-    return new Comparator<Person>() {
-
-      @Override
-      public int compare(Person p1, Person p2) {
-
-        return p1.getAge() - p2.getAge();
-      }
-    };
+    // ... or whole calculations
+    return (p1, p2) -> p1.getAge() - p2.getAge();
   }
-
+  
   private static Comparator<Person> createComparatorByAgeThenName() {
 
-    return new Comparator<Person>() {
-
-      @Override
-      public int compare(Person p1, Person p2) {
-
-        int result = compareToAge(p1, p2);
-        if (result == 0) {
-          result = compareToName(p1, p2);
-        }
-        return result;
+    // longer form of lamda expression. in case of more lines.
+    return (p1, p2) -> {
+      int result = compareToAge(p1, p2);
+      if (result == 0) {
+        result = compareToName(p1, p2);
       }
+      return result;
     };
   }
 
