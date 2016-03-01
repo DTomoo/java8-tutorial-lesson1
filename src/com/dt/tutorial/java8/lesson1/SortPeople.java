@@ -6,8 +6,10 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Step3: 
- * - how can we create comparators in nicer way?
+ * Step4: 
+ * - why Collections.sort is so ugly?
+ * - let's transform that into a stream
+ * - move out other business logic from Person class
  * 
  * @author dt
  *
@@ -39,35 +41,25 @@ public class SortPeople {
 
   private static Comparator<Person> createComparatorByName() {
 
-    // lambda expressions are working fine with functions...
-    return (p1, p2) -> compareToName(p1, p2);
+    // method reference can be used instead of lambda expression...
+    return SortPeople::compareToName;
   }
 
   private static Comparator<Person> createComparatorByAge() {
 
-    // ... or whole calculations
-    return (p1, p2) -> p1.getAge() - p2.getAge();
+    // ... or a dynamic comparator can be created in this way:
+    return Comparator.comparing(Person::getAge);
   }
   
   private static Comparator<Person> createComparatorByAgeThenName() {
 
-    // longer form of lamda expression. in case of more lines.
-    return (p1, p2) -> {
-      int result = compareToAge(p1, p2);
-      if (result == 0) {
-        result = compareToName(p1, p2);
-      }
-      return result;
-    };
+    // a very dynamic one
+    return Comparator.comparing(Person::getAge)
+                     .thenComparing(Person::getName);
   }
 
   private static int compareToName(Person p1, Person p2) {
 
     return p1.getName().compareTo(p2.getName());
-  }
-
-  private static int compareToAge(Person p1, Person p2) {
-
-    return p1.getAge() - p2.getAge();
   }
 }
